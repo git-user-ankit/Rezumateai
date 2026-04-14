@@ -1,0 +1,83 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {uid}
+    // Fields:
+    //   - uid: string (required) - Firebase Auth UID
+    //   - email: string (required) - User email
+    //   - fullName: string (optional) - User full name
+    //   - createdAt: string (required) - ISO timestamp
+    //   - updatedAt: string (required) - ISO timestamp
+    //
+    // Collection: resumes
+    // Document ID: {resumeId}
+    // Fields:
+    //   - userId: string (required) - Owner UID
+    //   - title: string (required) - Resume title
+    //   - data: map (required) - Resume content
+    //   - score: number (optional) - ATS score
+    //   - createdAt: timestamp (required)
+    //   - updatedAt: timestamp (required)
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+
+    function isNewDocOwner() {
+      return isAuthenticated() && request.auth.uid == request.resource.data.userId;
+    }
+
+    function isValidUser(data) {
+      return data.uid == request.auth.uid &&
+             data.email is string &&
+             data.email.size() < 255 &&
+             (!('fullName' in data) || (data.fullName is string && data.fullName.size() < 100));
+    }
+
+    function isValidResume(data) {
+      return data.userId == request.auth.uid &&
+             data.title is string &&
+             data.title.size() > 0 &&
+             data.title.size() < 200 &&
+             data.data is map;
+    }
+
+    // Rules
+    
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid) && isValidUser(request.resource.data);
+      allow update: if isOwner(uid) && isValidUser(request.resource.data);
+      allow delete: if false;
+
+      match /data/{docId} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    match /resumes/{resumeId} {
+      allow read: if isDocOwner();
+      allow create: if isNewDocOwner() && isValidResume(request.resource.data);
+      allow update: if isDocOwner() && isNewDocOwner() && isValidResume(request.resource.data);
+      allow delete: if isDocOwner();
+    }
+  }
+}

@@ -332,19 +332,22 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ onBack, initialData, onSa
     setIsDownloading(true);
 
     const opt = {
-      margin:       [0.4, 0, 0.4, 0], // Reduced margin for better fit
+      margin:       [0.5, 0, 0.5, 0], // Top, Right, Bottom, Left margins (in inches)
       filename:     `${data.fullName.replace(/\s+/g, '_')}_resume.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true, logging: false },
       jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
-      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+      pagebreak:    { mode: ['css', 'legacy'], avoid: ['.break-inside-avoid', 'li', 'h2', 'h1', 'p'] }
     };
 
     const clone = element.cloneNode(true) as HTMLElement;
     clone.style.transform = "none";
     clone.style.width = "8.5in";
     clone.style.height = "auto";
+    clone.style.maxHeight = "none";
+    clone.style.overflow = "visible";
     clone.style.margin = "0 auto";
+    clone.style.padding = "0 0.5in"; // Remove vertical padding, rely completely on jsPDF margins for every page
     clone.style.fontFamily = selectedFont;
     
     // Inject custom print styles for the clone to ensure clean page breaks
@@ -642,7 +645,7 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ onBack, initialData, onSa
                                             <Input label="Location" value={exp.location} onChange={(v) => updateExperience(exp.id, 'location', v)} />
                                         </div>
                                         <Input label="Timeframe" value={exp.duration} onChange={(v) => updateExperience(exp.id, 'duration', v)} className="mb-3" />
-                                        <TextArea label="Description (Bullet points)" value={exp.points.join('\n')} onChange={(v) => {
+                                        <TextArea label="Description (Bullet points)" value={(exp.points || []).join('\n')} onChange={(v) => {
                                              handleStateChange(prev => ({
                                                 ...prev,
                                                 experience: prev.experience.map(e => e.id === exp.id ? { ...e, points: v.split('\n') } : e)
@@ -669,7 +672,7 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ onBack, initialData, onSa
                                         <Input label="School" value={edu.school} onChange={(v) => updateEducation(edu.id, 'school', v)} className="mb-3" />
                                         <Input label="Year" value={edu.year} onChange={(v) => updateEducation(edu.id, 'year', v)} className="mb-3" />
                                         <Input label="Location" value={edu.location} onChange={(v) => updateEducation(edu.id, 'location', v)} className="mb-3" />
-                                        <TextArea label="Details (Bullet points)" value={edu.details.join('\n')} onChange={(v) => {
+                                        <TextArea label="Details (Bullet points)" value={(edu.details || []).join('\n')} onChange={(v) => {
                                              handleStateChange(prev => ({
                                                 ...prev,
                                                 education: prev.education.map(e => e.id === edu.id ? { ...e, details: v.split('\n') } : e)
@@ -699,7 +702,7 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ onBack, initialData, onSa
                         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 md:p-6 shadow-sm transition-colors">
                             <h3 className="text-lg font-mono font-bold mb-4 md:mb-6 border-b border-gray-100 dark:border-gray-800 pb-2 dark:text-white">Additional Section</h3>
                              <Input label="Section Title" value={data.additionalInfo.title} onChange={(v) => updateAdditionalInfoTitle(v)} className="mb-4" />
-                             <TextArea label="Content (Bullet points)" value={data.additionalInfo.points.join('\n')} onChange={(v) => updateAdditionalInfoPoints(v)} />
+                             <TextArea label="Content (Bullet points)" value={(data.additionalInfo.points || []).join('\n')} onChange={(v) => updateAdditionalInfoPoints(v)} />
                         </div>
                     </MotionDiv>
                 ) : (

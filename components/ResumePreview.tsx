@@ -11,10 +11,11 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({ data, scale = 1, font = '
   return (
     <div 
       id="resume-preview"
-      className="bg-white text-black p-[0.5in] mx-auto origin-top flex flex-col shadow-2xl"
+      className="bg-white text-black p-[0.5in] mx-auto origin-top flex flex-col shadow-2xl relative overflow-hidden"
       style={{ 
         width: '8.5in', 
         minHeight: '11in',
+        maxHeight: '20.2in', // Strict 2-page limit minus margins
         transform: `scale(${scale})`,
         marginBottom: `${(scale - 1) * -11}in`,
         fontFamily: font,
@@ -46,19 +47,21 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({ data, scale = 1, font = '
           <div className="mb-5">
             <h2 className="text-[11pt] font-bold uppercase border-b border-black mb-3 tracking-wide">Education</h2>
             {data.education.map((edu) => (
-              <div key={edu.id} className="mb-3 break-inside-avoid">
-                <div className="flex justify-between items-baseline text-[11pt]">
-                  <span className="font-bold">{edu.school}</span>
-                  <span className="font-bold">{edu.location}</span>
-                </div>
-                <div className="flex justify-between items-baseline text-[10.5pt] mb-1">
-                  <span className="italic">{edu.degree}</span>
-                  <span>{edu.year}</span>
+              <div key={edu.id} className="mb-3">
+                <div className="break-inside-avoid">
+                  <div className="flex justify-between items-baseline text-[11pt]">
+                    <span className="font-bold">{edu.school}</span>
+                    <span className="font-bold">{edu.location}</span>
+                  </div>
+                  <div className="flex justify-between items-baseline text-[10.5pt] mb-1">
+                    <span className="italic">{edu.degree}</span>
+                    <span>{edu.year}</span>
+                  </div>
                 </div>
                 {edu.details.length > 0 && (
                   <ul className="list-disc ml-5 text-[10.5pt] marker:text-black mt-1">
                     {edu.details.map((detail, idx) => (
-                      <li key={idx} className="pl-0.5 mb-0.5">{detail}</li>
+                      <li key={idx} className="pl-0.5 mb-0.5 break-inside-avoid">{detail}</li>
                     ))}
                   </ul>
                 )}
@@ -72,18 +75,20 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({ data, scale = 1, font = '
           <div className="mb-5">
             <h2 className="text-[11pt] font-bold uppercase border-b border-black mb-3 tracking-wide">Professional Experience</h2>
             {data.experience.map((exp) => (
-              <div key={exp.id} className="mb-4 break-inside-avoid">
-                <div className="flex justify-between items-baseline text-[11pt]">
-                  <span className="font-bold">{exp.company}</span>
-                  <span className="font-bold">{exp.location}</span>
-                </div>
-                <div className="flex justify-between items-baseline text-[10.5pt] mb-1">
-                  <span className="italic">{exp.role}</span>
-                  <span>{exp.duration}</span>
+              <div key={exp.id} className="mb-4">
+                <div className="break-inside-avoid">
+                  <div className="flex justify-between items-baseline text-[11pt]">
+                    <span className="font-bold">{exp.company}</span>
+                    <span className="font-bold">{exp.location}</span>
+                  </div>
+                  <div className="flex justify-between items-baseline text-[10.5pt] mb-1">
+                    <span className="italic">{exp.role}</span>
+                    <span>{exp.duration}</span>
+                  </div>
                 </div>
                 <ul className="list-disc ml-5 text-[10.5pt] marker:text-black mt-1">
                   {exp.points.map((point, idx) => (
-                    <li key={idx} className="pl-0.5 mb-0.5 text-justify">{point}</li>
+                    <li key={idx} className="pl-0.5 mb-0.5 text-justify break-inside-avoid">{point}</li>
                   ))}
                 </ul>
               </div>
@@ -93,11 +98,11 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({ data, scale = 1, font = '
 
         {/* Technical Skills */}
         {data.skills.length > 0 && (
-          <div className="mb-5 break-inside-avoid">
-            <h2 className="text-[11pt] font-bold uppercase border-b border-black mb-2 tracking-wide">Technical Skills</h2>
+          <div className="mb-5">
+            <h2 className="text-[11pt] font-bold uppercase border-b border-black mb-2 tracking-wide break-inside-avoid">Technical Skills</h2>
             <div className="text-[10.5pt]">
               {data.skills.map((skill, idx) => (
-                <div key={idx} className="mb-1">
+                <div key={idx} className="mb-1 break-inside-avoid">
                   <span className="font-bold">{'• ' + skill.category}:</span> {skill.items}
                 </div>
               ))}
@@ -107,11 +112,11 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({ data, scale = 1, font = '
 
         {/* Additional Info / Achievements */}
         {data.additionalInfo.points.length > 0 && (
-           <div className="mb-5 break-inside-avoid">
-              <h2 className="text-[11pt] font-bold uppercase border-b border-black mb-2 tracking-wide">{data.additionalInfo.title}</h2>
+           <div className="mb-5">
+              <h2 className="text-[11pt] font-bold uppercase border-b border-black mb-2 tracking-wide break-inside-avoid">{data.additionalInfo.title}</h2>
               <ul className="list-disc ml-5 text-[10.5pt] marker:text-black">
                   {data.additionalInfo.points.map((point, idx) => (
-                      <li key={idx} className="pl-0.5 mb-0.5 text-justify">{point}</li>
+                      <li key={idx} className="pl-0.5 mb-0.5 text-justify break-inside-avoid">{point}</li>
                   ))}
               </ul>
           </div>

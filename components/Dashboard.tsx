@@ -209,12 +209,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       if (savedChatResumeId) {
         setPendingChatResumeId(savedChatResumeId);
       }
-
-      const savedAtsResults = await getAtsResult(user.uid);
-      if (savedAtsResults) setAtsResult(savedAtsResults as any);
-
-      const savedExtractedData = await getExtractedDataFirestore(user.uid);
-      if (savedExtractedData) setExtractedResumeData(savedExtractedData);
       
       // Sync tabs from profile
       if (userProfile?.preferences?.activeTab) {
@@ -254,20 +248,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       saveChatResumeId(user.uid, chatResume?.id || null);
     }
   }, [chatResume, user]);
-
-  // Auto-save ATS results when they change
-  useEffect(() => {
-    if (atsResult && user) {
-      saveAtsResult(user.uid, atsResult as any);
-    }
-  }, [atsResult, user]);
-
-  // Auto-save extracted data when it changes
-  useEffect(() => {
-    if (extractedResumeData && user) {
-      saveExtractedDataFirestore(user.uid, extractedResumeData);
-    }
-  }, [extractedResumeData, user]);
 
   useEffect(() => {
     if (isChatOpen && chatEndRef.current) {

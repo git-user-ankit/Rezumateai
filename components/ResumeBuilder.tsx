@@ -323,17 +323,23 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ onBack, initialData, onSa
   };
 
   const handleDownloadPdf = () => {
-    let element = document.getElementById('resume-preview');
+    let element = document.getElementById('resume-preview-print');
     if (!element) {
-        alert("Please switch to Preview mode to download PDF.");
+        element = document.getElementById('resume-preview');
+    }
+    if (!element) {
+        alert("Unable to find resume document preview for printing.");
         return;
     }
     
     setIsDownloading(true);
 
+    const fullName = data.fullName || "my";
+    const filename = `${fullName.trim().replace(/\s+/g, '_')}_resume.pdf`;
+
     const opt = {
       margin:       [0.5, 0, 0.5, 0], // Top, Right, Bottom, Left margins (in inches)
-      filename:     `${data.fullName.replace(/\s+/g, '_')}_resume.pdf`,
+      filename:     filename,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true, logging: false },
       jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
@@ -791,6 +797,20 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ onBack, initialData, onSa
           currentPlan={currentPlan}
           context={planSelectionContext}
       />
+
+      {/* Hidden high-fidelity preview element specifically for high-quality PDF downloads */}
+      <div 
+        style={{ 
+          position: 'absolute', 
+          left: '-9999px', 
+          top: '-9999px', 
+          width: '8.5in', 
+          height: 'auto', 
+          overflow: 'hidden' 
+        }}
+      >
+        <ResumePreview data={data} id="resume-preview-print" font={selectedFont} scale={1} />
+      </div>
     </div>
   );
 };

@@ -13,7 +13,7 @@ const ai = new GoogleGenAI({
   }
 });
 
-const MODEL_NAME = 'gemini-3.1-pro-preview'; // Using 3.1 pro as it handles complex JSON schemas better, and avoids 403.
+const MODEL_NAME = 'gemini-3.5-flash'; // Standard model that is free-tier compatible and supports structured JSON outputs perfectly.
 
 // Reusable schema for ResumeData
 const resumeDataSchema: Schema = {

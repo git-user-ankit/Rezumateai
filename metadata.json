@@ -1,5 +1,6 @@
 {
   "name": "Rezumate AI",
   "description": "A modern, AI-powered Resume Builder and Portfolio generator designed to help freshers and professionals beat Applicant Tracking Systems (ATS) using Google Gemini.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

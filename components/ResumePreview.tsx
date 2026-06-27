@@ -5,12 +5,13 @@ interface ResumePreviewProps {
   data: ResumeData;
   scale?: number;
   font?: string;
+  id?: string;
 }
 
-const ResumePreview: React.FC<ResumePreviewProps> = ({ data, scale = 1, font = 'Times New Roman, serif' }) => {
+const ResumePreview: React.FC<ResumePreviewProps> = ({ data, scale = 1, font = 'Times New Roman, serif', id = "resume-preview" }) => {
   return (
     <div 
-      id="resume-preview"
+      id={id}
       className="bg-white text-black p-[0.5in] mx-auto origin-top flex flex-col shadow-2xl relative overflow-hidden"
       style={{ 
         width: '8.5in', 
